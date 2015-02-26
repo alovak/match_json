@@ -10,8 +10,6 @@ module MatchJson
         @actual_json = JSON.parse(actual_json)
 
         match = catch(:match) { json_included?(@actual_json, @expected_json) }
-        # @actual, @expected = scrub(actual_json, @path), scrub(@expected_json)
-        # @actual == @expected
       end
 
       def failure_message
@@ -25,31 +23,45 @@ module MatchJson
       private
 
       def json_included?(actual, expected)
-        case actual
-        when Hash then hash_included?(actual, expected)
-        when Array then array_included?(actual, expected)
-        end
-
-        true
+        equal_value?(actual, expected)
       end
 
-      def hash_included?(actual, expected)
+      def hash_included?(actual, expected, nested, raise_error)
         expected.each do |key, value|
-          if (actual[key] != value)
+          if (!equal_value?(actual[key], value, "#{nested} > #{key}", raise_error))
             @failure_message = %Q("#{key}"=>#{value} was not found in\n #{actual})
 
-            throw :match, false
+            if raise_error
+              throw(:match, false)
+            else
+              return false
+            end
           end
         end
       end
 
-      def array_included?(actual, expected)
+      def array_included?(actual, expected, nested, raise_error)
         expected.each do |value|
-          if (!actual.include?(value))
-            @failure_message = %Q("#{value}" was not found in\n #{actual})
+          if (!actual.any? { |actual_value| equal_value?(actual_value, value, nested, false) })
+            @failure_message = %Q("#{value}" was not found in\n )
+            @failure_message << %Q("#{nested}"=>) if !nested.empty?
+            @failure_message << "#{actual}"
 
-            throw :match, false
+            if raise_error
+              throw(:match, false)
+            else
+              return false
+            end
           end
+        end
+      end
+
+      def equal_value?(actual, expected, nested = '', raise_error = true)
+        case expected
+        when Array then array_included?(actual, expected, nested, raise_error)
+        when Hash then hash_included?(actual, expected, nested, raise_error)
+        else
+          actual == expected
         end
       end
     end
