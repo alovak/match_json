@@ -78,4 +78,12 @@ describe MatchJson::Matchers do
       }.to fail_with(%Q("{"one"=>{"array"=>[1, 2, 3, 4]}}" was not found in\n [{"one"=>{"array"=>[1, 2, 3]}}]))
     end
   end
+
+  context 'when with pattern' do
+    it 'matches' do
+      expect(%Q({"one": "123"})).to include_json(%Q({"one": "{id}"}))
+      expect(%Q({"one": "test@exmaple.com"})).to include_json(%Q({"one": "{email}"}))
+      expect(%Q({"one": "2020-12-22"})).to include_json(%Q({"one": "{date}"}))
+    end
+  end
 end
