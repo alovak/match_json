@@ -7,7 +7,7 @@ module MatchJson
       end
 
       def matches?(actual_json)
-        @actual_json = JSON.parse(actual_json)
+        @actual_json = actual_json.respond_to?(:body) ? JSON.parse(actual_json.body) : JSON.parse(actual_json)
 
         match = catch(:match) { json_included?(@actual_json, @expected_json) }
       end
