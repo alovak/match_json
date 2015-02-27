@@ -1,6 +1,73 @@
 # MatchJson
 
-TODO: Write a gem description
+Easily test your JSON in RSpec and Cucumber.
+
+This matcher can't be the only tool when you test your JSON. We also
+recommend to use [json-schema](https://github.com/ruby-json-schema/json-schema)
+as a perfect companion to MatchJson.
+
+## Usage: RSpec
+
+In RSpec we add this matcher: ```include_json```
+
+So you can use it as follows:
+
+```ruby
+it 'returns charge' do
+  get '/charges/#{charge.id}'
+
+  expect(response).to include_json(<<-JSON)
+  {
+    "id": "{uuid}",
+    "amount": 100,
+    "currency": "USD",
+    "created_at": "{date_time_iso8601}"
+  }
+  JSON
+end
+
+it 'returns list of charges' do
+  get '/charges'
+
+  expect(response).to include_json(<<-JSON)
+  {
+    "charges": [
+      {
+        "id": "{uuid}",
+        "amount": 100,
+        "currency": "USD",
+        "created_at": "{date_time_iso8601}"
+      }
+    ]
+  }
+  JSON
+end
+```
+
+As you can see for cases when you do not know the value of some properties like
+```id``` or ```created_at``` or even ```email``` you can use 'pattern' instead.
+
+You can use the following predefined patterns:
+
+* date_time_iso8601
+* date
+* uuid
+* email
+* string
+
+You also can add your own pattern in this way:
+
+```ruby
+MatchJson::Matchers::IncludeJson::PATTERNS['id'] = /\A\d{6}\z/
+```
+
+and then use it in your spec:
+
+```ruby
+it 'uses patten to check value' do
+  expect(%Q({"one": "123456"})).to include_json(%Q({"one": "{id}"}))
+end
+```
 
 ## Installation
 
@@ -17,10 +84,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install match_json
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Contributing
 
