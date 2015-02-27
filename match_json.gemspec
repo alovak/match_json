@@ -6,11 +6,11 @@ require 'match_json/version'
 Gem::Specification.new do |spec|
   spec.name          = "match_json"
   spec.version       = MatchJson::VERSION
-  spec.authors       = ["Pavel Gabriel"]
+  spec.authors       = ["Pavel Gabriel", "White Payments"]
   spec.email         = ["alovak@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{RSpec matcher for JSON documents}
+  spec.description   = %q{Easily test your JSON in RSpec and Cucumber.}
+  spec.homepage      = "https://github.com/WhitePayments/match_json"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
