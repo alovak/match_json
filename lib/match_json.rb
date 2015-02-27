@@ -1,4 +1,5 @@
 require "json"
+require "rspec"
 require "match_json/version"
 require "match_json/matchers"
 
