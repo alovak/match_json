@@ -60,7 +60,7 @@ module MatchJson
         case expected
         when Array then array_included?(actual, expected, nested, raise_error)
         when Hash then hash_included?(actual, expected, nested, raise_error)
-        when /\{.*\}/ then compare_with_pattern(expected, actual)
+        when String then compare_with_pattern(expected, actual)
         else
           actual == expected
         end
@@ -72,7 +72,7 @@ module MatchJson
           reg_exp = value.match(/{re:(.*)}/)[1]
           actual =~ Regexp.new(reg_exp)
         when /{date_time_iso8601}/
-          actual =~ /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/
+          actual =~ /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
         when /{date}/
           actual =~ /^\d{4}-\d{2}-\d{2}/
         when /{id}/
@@ -83,6 +83,8 @@ module MatchJson
           actual =~ /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,6}\z/i
         when /{string}/
           actual =~ /\A.+\z/i
+        else
+          pattern == actual
         end
       end
     end
