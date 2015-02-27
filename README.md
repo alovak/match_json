@@ -1,4 +1,5 @@
 # MatchJson
+[![Code Climate](https://codeclimate.com/github/WhitePayments/match_json/badges/gpa.svg)](https://codeclimate.com/github/WhitePayments/match_json)
 
 Easily test your JSON in RSpec and Cucumber.
 
