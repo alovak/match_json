@@ -56,7 +56,8 @@ You can use the following predefined patterns:
 * email
 * string
 
-You also can add your own pattern in this way:
+You also can add your own pattern. Just add into spec/support/match_json.rb your
+new patterns:
 
 ```ruby
 MatchJson::Matchers::IncludeJson::PATTERNS['id'] = /\A\d{6}\z/
