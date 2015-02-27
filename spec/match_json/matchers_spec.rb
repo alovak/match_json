@@ -56,9 +56,26 @@ describe "include_json" do
 
   context 'with pattern' do
     it 'passes when value matches pattern' do
-      expect(%Q({"one": "123"})).to include_json(%Q({"one": "{id}"}))
       expect(%Q({"one": "test@exmaple.com"})).to include_json(%Q({"one": "{email}"}))
       expect(%Q({"one": "2020-12-22"})).to include_json(%Q({"one": "{date}"}))
+    end
+  end
+
+  context 'with custom pattern' do
+    before do
+      MatchJson::Matchers::IncludeJson::PATTERNS['id'] = /\A\d{6}\z/
+    end
+
+    after do
+      MatchJson::Matchers::IncludeJson::PATTERNS.delete('id')
+    end
+
+    it 'uses patten to check value' do
+      expect(%Q({"one": "123456"})).to include_json(%Q({"one": "{id}"}))
+
+      expect {
+        expect(%Q({"one": "abcdef"})).to include_json(%Q({"one": "{id}"}))
+      }.to fail_with(%Q("one"=>{id} was not found in\n {"one"=>"abcdef"}))
     end
   end
 end

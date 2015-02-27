@@ -2,6 +2,14 @@
 module MatchJson
   module Matchers
     class IncludeJson
+      PATTERNS = {
+        'date_time_iso8601' => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
+        'date' => /^\d{4}-\d{2}-\d{2}/,
+        'uuid' => /\h{32}/,
+        'email' => /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,6}\z/i,
+        'string' => /\A.+\z/i
+      }
+
       def initialize(expected_json)
         @expected_json = JSON.parse(expected_json)
       end
@@ -66,26 +74,24 @@ module MatchJson
         end
       end
 
-      def compare_with_pattern(pattern, actual)
-        case pattern
-        when /^{re:/
+      def compare_with_pattern(value, actual)
+        case
+        when regexp?(value)
           reg_exp = value.match(/{re:(.*)}/)[1]
           actual =~ Regexp.new(reg_exp)
-        when /{date_time_iso8601}/
-          actual =~ /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
-        when /{date}/
-          actual =~ /^\d{4}-\d{2}-\d{2}/
-        when /{id}/
-          actual =~ /.+/
-        when /{uuid}/
-          actual =~ /\h{32}/
-        when /{email}/
-          actual =~ /\A[-a-z0-9_+\.]+\@([-a-z0-9]+\.)+[a-z0-9]{2,6}\z/i
-        when /{string}/
-          actual =~ /\A.+\z/i
+        when pattern?(value)
+          actual =~ PATTERNS["#{value.gsub('{', '').gsub('}', '')}"]
         else
-          pattern == actual
+          value == actual
         end
+      end
+
+      def pattern?(str)
+        !!(str =~ /\A\{\w+\}\z/)
+      end
+
+      def regexp?(str)
+        !!(str =~ /\A\{re:.+\}\z/)
       end
     end
   end
