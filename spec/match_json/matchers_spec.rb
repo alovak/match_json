@@ -54,6 +54,14 @@ describe "include_json" do
     end
   end
 
+  context 'when ckeck for inclusion of different types' do
+    it 'fails with clean message' do
+      expect {
+        expect(%Q([ { "one": 1 } ])).to include_json(%Q({ "one": 1 }))
+      }.to fail_with(%Q(Different types of compared elements:\n Array for [{"one"=>1}]\nand Hash for {"one"=>1}))
+    end
+  end
+
   context 'with pattern' do
     it 'passes when value matches pattern' do
       expect(%Q({"one": "test@exmaple.com"})).to include_json(%Q({"one": "{email}"}))

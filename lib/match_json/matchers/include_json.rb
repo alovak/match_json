@@ -35,6 +35,11 @@ module MatchJson
       end
 
       def hash_included?(actual, expected, nested, raise_error)
+        if compared_different_types?(actual, expected)
+          @failure_message = %Q(Different types of compared elements:\n #{actual.class} for #{actual}\nand #{expected.class} for #{expected})
+          throw(:match, false)
+        end
+
         expected.each do |key, value|
           if (!equal_value?(actual[key], value, "#{nested} > #{key}", raise_error))
             @failure_message = %Q("#{key}"=>#{value} was not found in\n #{actual})
@@ -92,6 +97,10 @@ module MatchJson
 
       def regexp?(str)
         !!(str =~ /\A\{re:.+\}\z/)
+      end
+
+      def compared_different_types?(actual, expected)
+        actual.class != expected.class
       end
     end
   end
