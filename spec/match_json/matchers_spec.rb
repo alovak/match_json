@@ -86,6 +86,8 @@ describe "include_json" do
 
     it 'uses patten to check value' do
       expect(%Q({"one": "123456"})).to include_json(%Q({"one": "{id}"}))
+      expect(%Q({"one": 123456})).to include_json(%Q({"one": {id}}))
+      expect(%Q({"one": "123456"})).not_to include_json(%Q({"one": {id}}))
 
       expect {
         expect(%Q({"one": "abcdef"})).to include_json(%Q({"one": "{id}"}))

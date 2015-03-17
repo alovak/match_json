@@ -11,13 +11,13 @@ module MatchJson
       }
 
       def initialize(expected_json)
-        @expected_json = JSON.parse(expected_json)
+        @expected_json = JSON.parse(expected_json.gsub(/(?<!")(\{\w+\})(?!")/, '"\1:non-string"'))
       end
 
       def matches?(actual_json)
         @actual_json = actual_json.respond_to?(:body) ? JSON.parse(actual_json.body) : JSON.parse(actual_json)
 
-        match = catch(:match) { json_included?(@actual_json, @expected_json) }
+        catch(:match) { json_included?(@actual_json, @expected_json) }
       end
 
       def failure_message
@@ -85,7 +85,9 @@ module MatchJson
           reg_exp = value.match(/{re:(.*)}/)[1]
           actual =~ Regexp.new(reg_exp)
         when pattern?(value)
-          actual =~ PATTERNS["#{value.gsub('{', '').gsub('}', '')}"]
+          actual =~ PATTERNS["#{value.tr('{}', '')}"]
+        when non_string_pattern?(value) && !actual.is_a?(String)
+          actual.to_s =~ PATTERNS["#{value.tr('{}', '').sub(':non-string', '')}"]
         else
           value == actual
         end
@@ -93,6 +95,10 @@ module MatchJson
 
       def pattern?(str)
         !!(str =~ /\A\{\w+\}\z/)
+      end
+
+      def non_string_pattern?(str)
+        !!(str =~ /\A\{\w+\}:non-string\z/)
       end
 
       def regexp?(str)
