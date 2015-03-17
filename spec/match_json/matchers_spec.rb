@@ -32,6 +32,12 @@ describe "include_json" do
         expect(%Q({ "array" : [1, 2, 3] })).to include_json(%Q({ "array" : [5, 1] }))
       }.to fail_with(%Q("5" was not found in\n " > array"=>[1, 2, 3]))
     end
+
+    it 'fails with there is null instead of array' do
+      expect {
+        expect(%Q({ "array" : null })).to include_json(%Q({ "array" : [5] }))
+      }.to fail_with(%Q("5" was not found in\n " > array"=>nil))
+    end
   end
 
   context 'when array contains object' do
