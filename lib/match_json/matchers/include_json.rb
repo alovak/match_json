@@ -55,10 +55,10 @@ module MatchJson
 
       def array_included?(actual, expected, nested, raise_error)
         expected.each do |value|
-          if (!actual.any? { |actual_value| equal_value?(actual_value, value, nested, false) })
+          if actual.nil? || (!actual.any? { |actual_value| equal_value?(actual_value, value, nested, false) })
             @failure_message = %Q("#{value}" was not found in\n )
             @failure_message << %Q("#{nested}"=>) if !nested.empty?
-            @failure_message << "#{actual}"
+            @failure_message << "#{actual.nil? ? "nil" : actual}"
 
             if raise_error
               throw(:match, false)
