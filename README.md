@@ -68,6 +68,8 @@ and then use it in your spec:
 ```ruby
 it 'uses patten to check value' do
   expect(%Q({"one": "123456"})).to include_json(%Q({"one": "{id}"}))
+  # you can do even this:
+  expect(%Q({"one": 123456})).to include_json(%Q({"one": {id}}))
 end
 ```
 
