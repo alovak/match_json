@@ -1,11 +1,22 @@
-# MatchJson
+# MatchJSON
 [![Code Climate](https://codeclimate.com/github/WhitePayments/match_json/badges/gpa.svg)](https://codeclimate.com/github/WhitePayments/match_json)
 
-Easily test your JSON in RSpec and Cucumber.
+![Match JSON](match.png "Match JSON")
+
+Test your JSON in RSpec and Cucumber, like a boss.
+
+# Getting Started
+
+- Drop this baby into your Gemfile like so:
+
+```ruby
+gem 'match_json'
+```
+
+- Run `bundle`
 
 This matcher can't be the only tool when you test your JSON. We also
-recommend to use [json-schema](https://github.com/ruby-json-schema/json-schema)
-as a perfect companion to MatchJson.
+recommend to use [json-schema](https://github.com/ruby-json-schema/json-schema) as a perfect companion to MatchJson.
 
 ## Usage: RSpec
 
@@ -74,16 +85,6 @@ end
 ```
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'match_json'
-```
-
-And then execute:
-
-    $ bundle
 
 Or install it yourself as:
 
