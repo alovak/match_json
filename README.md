@@ -1,11 +1,73 @@
-# MatchJSON
-[![Code Climate](https://codeclimate.com/github/WhitePayments/match_json/badges/gpa.svg)](https://codeclimate.com/github/WhitePayments/match_json)
+# MatchJSON [![Code Climate](https://codeclimate.com/github/WhitePayments/match_json/badges/gpa.svg)](https://codeclimate.com/github/WhitePayments/match_json)
 
 ![Match JSON](match.png "Match JSON")
 
 Test your JSON in RSpec and Cucumber, like a boss.
 
-# Getting Started
+> The **only** matches I let my kids play with 
+> -- Mom
+
+## Getting Started
+
+Ever since the dawn of mankind, humans everywhere have been searching for a tool to test their JSON. 
+
+Then computers were invented.
+
+Then matchJSON came about.
+
+Then everyone lived happily ever after.
+
+*Stop warping your brain with hard-to-read regex and weird-looking tests.*
+
+
+```ruby
+# The old, yucky way
+it "returns the current pony" do
+  get "/ponies/#{pony.id}"
+
+  current_pony = JSON.parse(response.body)["pony"]
+  expect(current_pony["cuteness""]).to eq 90
+  expect(current_pony["fluffiness""]).to eq "extra-fluffy"
+  expect(current_pony["name"]).to eq "McPony"
+end
+
+# The new, cool way
+it "returns the current pony" do
+  get "/ponies/#{pony.id}"
+
+  expect(response).to match_json(<<-JSON)
+  {
+    "cuteness": 90,
+    "fluffiness": "extra-fluffy",
+    "name": "McPony",
+  }
+  JSON
+end
+```
+
+Already using **[JSON-Schema](https://github.com/ruby-json-schema/json-schema)**? We're BFFs :heart:
+
+```ruby
+# You're a super star
+
+it "returns the current pony" do
+  get "/ponies/#{pony.id}"
+
+  # Some JSON-Schema love to check the schema
+  expect(response).to match_response_schema(:charge)
+
+  # MatchJSON to test the values (explicit is AWESOME)
+  expect(response).to match_json(<<-JSON)
+  {
+    "cuteness": 90,
+    "fluffiness": "extra-fluffy",
+    "name": "McPony",
+  }
+  JSON
+end
+```
+
+## Installation
 
 - Drop this baby into your Gemfile like so:
 
@@ -15,8 +77,28 @@ gem 'match_json'
 
 - Run `bundle`
 
-This matcher can't be the only tool when you test your JSON. We also
-recommend to use [json-schema](https://github.com/ruby-json-schema/json-schema) as a perfect companion to MatchJson.
+
+## Advanced action
+
+You can add some patterns in the mix to make things interesting:
+
+```ruby
+# RSpec
+it 'returns ponies' do
+  get '/ponies/#{pony.id}'
+
+  expect(response).to match_json(<<-JSON)
+  {
+    "id": "{uuid}", # UUID Pattern
+    "cuteness": 90,
+    "fluffiness": "extra-fluffy",
+    "name": "McPony",
+    "created_at": "{date_time_iso8601}" # DateTime pattern (well, duh)
+  }
+  JSON
+end
+```
+
 
 ## Usage: RSpec
 
