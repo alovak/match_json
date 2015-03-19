@@ -36,13 +36,13 @@ module MatchJson
 
       def hash_included?(actual, expected, nested, raise_error)
         if compared_different_types?(actual, expected)
-          @failure_message = %Q(Different types of compared elements:\n #{actual.class} for #{actual}\nand #{expected.class} for #{expected})
+          @failure_message = %Q(Different types of compared elements:\n #{actual.class} for #{actual.to_json}\nand #{expected.class} for #{expected.to_json})
           throw(:match, false)
         end
 
         expected.each do |key, value|
           if (!equal_value?(actual[key], value, "#{nested} > #{key}", raise_error))
-            @failure_message = %Q("#{key}"=>#{value} was not found in\n #{actual})
+            @failure_message = %Q("#{key}":#{value.to_json} was not found in\n #{actual.to_json})
 
             if raise_error
               throw(:match, false)
@@ -56,9 +56,9 @@ module MatchJson
       def array_included?(actual, expected, nested, raise_error)
         expected.each do |value|
           if actual.nil? || (!actual.any? { |actual_value| equal_value?(actual_value, value, nested, false) })
-            @failure_message = %Q("#{value}" was not found in\n )
-            @failure_message << %Q("#{nested}"=>) if !nested.empty?
-            @failure_message << "#{actual.nil? ? "nil" : actual}"
+            @failure_message = %Q("#{value.to_json}" was not found in\n )
+            @failure_message << %Q("#{nested}":) if !nested.empty?
+            @failure_message << "#{actual.to_json}"
 
             if raise_error
               throw(:match, false)
