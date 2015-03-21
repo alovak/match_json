@@ -53,7 +53,7 @@ it "returns the current pony" do
   get "/ponies/#{pony.id}"
 
   # JSON-Schema to check the schema
-  expect(response).to match_response_schema(:charge)
+  expect(response).to match_response_schema(:pony)
 
   # MatchJSON to test the values (gotta love explicit tests)
   expect(response).to match_json(<<-JSON)
