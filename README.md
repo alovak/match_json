@@ -113,7 +113,7 @@ Here's a list of the built-in patterns we provide:
 Just add them to `spec/support/match_json.rb`:
 
 ```ruby
-MatchJson::Matchers::MatchJson::PATTERNS['id'] = /\A\d{6}\z/
+MatchJson::Matchers::IncludeJson::PATTERNS['id'] = /\A\d{6}\z/
 ```
 
 and then use it in your spec like so:
