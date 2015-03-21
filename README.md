@@ -4,7 +4,7 @@
 
 Test your JSON in RSpec and Cucumber, like a boss.
 
-> The **only** matches I let my kids play with 
+> The **only** matcher I let my kids play with 
 > -- Mom
 
 ## Getting Started
