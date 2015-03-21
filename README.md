@@ -25,8 +25,8 @@ it "returns the current pony" do
   get "/ponies/#{pony.id}"
 
   current_pony = JSON.parse(response.body)["pony"]
-  expect(current_pony["cuteness""]).to eq 90
-  expect(current_pony["fluffiness""]).to eq "extra-fluffy"
+  expect(current_pony["cuteness"]).to eq 90
+  expect(current_pony["fluffiness"]).to eq "extra-fluffy"
   expect(current_pony["name"]).to eq "McPony"
 end
 ```
@@ -120,9 +120,9 @@ and then use it in your spec like so:
 
 ```ruby
 it 'uses patten to check value' do
-  expect(%Q({"one": "123456"})).to include_json(%Q({"one": "{id}"}))
+  expect(%Q({"one": "123456"})).to match_json(%Q({"one": "{id}"}))
   # .. you can even do this:
-  expect(%Q({"one": 123456})).to include_json(%Q({"one": {id}}))
+  expect(%Q({"one": 123456})).to match_json(%Q({"one": {id}}))
 end
 ```
 
