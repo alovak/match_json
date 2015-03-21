@@ -1,93 +1,130 @@
-# MatchJson
-[![Code Climate](https://codeclimate.com/github/WhitePayments/match_json/badges/gpa.svg)](https://codeclimate.com/github/WhitePayments/match_json)
+# MatchJSON [![Code Climate](https://codeclimate.com/github/WhitePayments/match_json/badges/gpa.svg)](https://codeclimate.com/github/WhitePayments/match_json)
 
-Easily test your JSON in RSpec and Cucumber.
+![Match JSON](assets/match.png "Match JSON")
 
-This matcher can't be the only tool when you test your JSON. We also
-recommend to use [json-schema](https://github.com/ruby-json-schema/json-schema)
-as a perfect companion to MatchJson.
+Test your JSON in RSpec and Cucumber, like a boss.
 
-## Usage: RSpec
+> The **only** matches I let my kids play with 
+> -- Mom
 
-In RSpec we add this matcher: ```include_json```
+## Getting Started
 
-So you can use it as follows:
+Ever since the dawn of mankind, humans everywhere have been searching for a tool to test their JSON. 
 
+Then computers were invented.
+
+Then matchJSON came about.
+
+Then everyone lived happily ever after.
+
+*Stop warping your brain with hard-to-read regex and weird-looking tests.*
+
+**The old, yucky way:**
 ```ruby
-it 'returns charge' do
-  get '/charges/#{charge.id}'
+it "returns the current pony" do
+  get "/ponies/#{pony.id}"
 
-  expect(response).to include_json(<<-JSON)
-  {
-    "id": "{uuid}",
-    "amount": 100,
-    "currency": "USD",
-    "created_at": "{date_time_iso8601}"
-  }
-  JSON
+  current_pony = JSON.parse(response.body)["pony"]
+  expect(current_pony["cuteness""]).to eq 90
+  expect(current_pony["fluffiness""]).to eq "extra-fluffy"
+  expect(current_pony["name"]).to eq "McPony"
 end
+```
 
-it 'returns list of charges' do
-  get '/charges'
+**The new, cool way:**
+```ruby
+it "returns the current pony" do
+  get "/ponies/#{pony.id}"
 
-  expect(response).to include_json(<<-JSON)
+  expect(response).to match_json(<<-JSON)
   {
-    "charges": [
-      {
-        "id": "{uuid}",
-        "amount": 100,
-        "currency": "USD",
-        "created_at": "{date_time_iso8601}"
-      }
-    ]
+    "cuteness": 90,
+    "fluffiness": "extra-fluffy",
+    "name": "McPony",
   }
   JSON
 end
 ```
 
-As you can see for cases when you do not know the value of some properties like
-```id``` or ```created_at``` or even ```email``` you can use 'pattern' instead.
-
-You can use the following predefined patterns:
-
-* date_time_iso8601
-* date
-* uuid
-* email
-* string
-
-You also can add your own pattern. Just add into spec/support/match_json.rb your
-new patterns:
+Wait, you already use **[JSON-Schema](https://github.com/ruby-json-schema/json-schema)**? We're BFFs :heart:
 
 ```ruby
-MatchJson::Matchers::IncludeJson::PATTERNS['id'] = /\A\d{6}\z/
-```
+it "returns the current pony" do
+  get "/ponies/#{pony.id}"
 
-and then use it in your spec:
+  # JSON-Schema to check the schema
+  expect(response).to match_response_schema(:charge)
 
-```ruby
-it 'uses patten to check value' do
-  expect(%Q({"one": "123456"})).to include_json(%Q({"one": "{id}"}))
-  # you can do even this:
-  expect(%Q({"one": 123456})).to include_json(%Q({"one": {id}}))
+  # MatchJSON to test the values (gotta love explicit tests)
+  expect(response).to match_json(<<-JSON)
+  {
+    "cuteness": 90,
+    "fluffiness": "extra-fluffy",
+    "name": "McPony",
+  }
+  JSON
 end
 ```
 
 ## Installation
 
-Add this line to your application's Gemfile:
+- Drop this baby into your Gemfile like so:
 
 ```ruby
 gem 'match_json'
 ```
 
-And then execute:
+- Run `bundle`
 
-    $ bundle
 
-Or install it yourself as:
+## Advanced usage
 
-    $ gem install match_json
+
+### Patterns
+
+Add some patterns in the mix to make things interesting:
+
+```ruby
+# RSpec
+it 'returns ponies' do
+  get '/ponies/#{pony.id}'
+
+  expect(response).to match_json(<<-JSON)
+  {
+    "id": "{uuid}", # UUID Pattern
+    "cuteness": 90,
+    "fluffiness": "extra-fluffy",
+    "name": "McPony",
+    "created_at": "{date_time_iso8601}" # DateTime pattern (well, duh)
+  }
+  JSON
+end
+```
+
+Here's a list of the built-in patterns we provide:
+* `date_time_iso8601`
+* `date`
+* `uuid`
+* `email`
+* `string`
+
+### Define your own patterns
+
+Just add them to `spec/support/match_json.rb`:
+
+```ruby
+MatchJson::Matchers::IncludeJson::PATTERNS['id'] = /\A\d{6}\z/
+```
+
+and then use it in your spec like so:
+
+```ruby
+it 'uses patten to check value' do
+  expect(%Q({"one": "123456"})).to include_json(%Q({"one": "{id}"}))
+  # .. you can even do this:
+  expect(%Q({"one": 123456})).to include_json(%Q({"one": {id}}))
+end
+```
 
 ## Contributing
 
