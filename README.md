@@ -2,7 +2,7 @@
 
 ![Match JSON](assets/match.png "Match JSON")
 
-Test your JSON in RSpec and Cucumber, like a boss.
+Test your JSON in RSpec, MiniTest or Cucumber, like a boss.
 
 > The **only** matcher I let my kids play with 
 > -- Mom
