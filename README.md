@@ -76,6 +76,22 @@ gem 'match_json'
 
 - Run `bundle`
 
+### Rspec
+
+In spec_helper.rb or rails_helper.rb include library as following:
+
+```
+require 'match_json/rspec'
+```
+
+###
+
+In minitest's test_helper.rb add this:
+
+```
+require 'match_json/minitest'
+```
+
 
 ## Advanced usage
 
