@@ -1,4 +1,4 @@
-require 'match_json'
+require 'match_json/rspec'
 require 'byebug'
 
 Dir['./spec/support/**/*'].each do |f|
