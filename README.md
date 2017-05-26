@@ -92,7 +92,6 @@ In minitest's test_helper.rb add this:
 require 'match_json/minitest'
 ```
 
-
 ## Advanced usage
 
 
