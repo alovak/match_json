@@ -14,3 +14,4 @@
 mkmf.log
 *.gem
 *.md.html
+.byebug_history

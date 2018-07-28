@@ -87,7 +87,7 @@ module MatchJson
         when defined_regexp?(value)
           defined_regexps = PATTERNS.keys.find_all { |pattern| pattern.is_a? Regexp }
           matches = value.match(/{(\w+):(\w+)}/)
-          reg_exp = defined_regexps.find {|re| re.match?("#{matches[1]}:#{matches[2]}") }
+          reg_exp = defined_regexps.find {|re| re.match("#{matches[1]}:#{matches[2]}") }
           PATTERNS[reg_exp].call(actual, matches[2])
         when pattern?(value)
           actual =~ PATTERNS["#{value.tr('{}', '')}"]
