@@ -129,15 +129,22 @@ Just add them to `spec/support/match_json.rb`:
 
 ```ruby
 MatchJson::Matchers::IncludeJson::PATTERNS['id'] = /\A\d{6}\z/
+MatchJson::Matchers::IncludeJson::PATTERNS[/id:(\w+)'] = proc { |actual, match| /\A#{match}_\z/ =~ actual }
 ```
 
 and then use it in your spec like so:
 
 ```ruby
 it 'uses patten to check value' do
+
+  # MatchJson::Matchers::IncludeJson::PATTERNS['id'] = /\A\d{6}\z/
   expect(%Q({"one": "123456"})).to match_json(%Q({"one": "{id}"}))
   # .. you can even do this:
   expect(%Q({"one": 123456})).to match_json(%Q({"one": {id}}))
+
+  # MatchJson::Matchers::IncludeJson::PATTERNS[/id:(\w+)'] = proc { |actual, match| /\A#{match}_\z/ =~ actual }
+  expect(%Q({"id": "usr_xxx"})).to match_json(%Q({"one": "{id:usr}"}))
+  expect(%Q({"id": "cus_xxx"})).to match_json(%Q({"one": "{id:cus}"}))
 end
 ```
 

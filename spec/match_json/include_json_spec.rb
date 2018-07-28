@@ -97,4 +97,20 @@ describe "include_json" do
       }.to fail_with(%Q("one":"{id}:non-string" was not found in\n {"one":true}))
     end
   end
+
+  context 'with custom pattern as regexp' do
+    let(:regexp) { /id:(\w+)/ }
+    before do
+      MatchJson::Matchers::IncludeJson::PATTERNS[regexp] = proc { |actual, match| /\A#{match}_\w+\z/ =~ actual }
+    end
+
+    after do
+      MatchJson::Matchers::IncludeJson::PATTERNS.delete(regexp)
+    end
+
+    it 'uses patten to check value' do
+      expect(%Q({"one": "cus_xxx"})).to include_json(%Q({"one": "{id:cus}"}))
+      expect(%Q({"one": "cust_xxx"})).to_not include_json(%Q({"one": "{id:cus}"}))
+    end
+  end
 end

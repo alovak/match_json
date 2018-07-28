@@ -84,6 +84,11 @@ module MatchJson
         when regexp?(value)
           reg_exp = value.match(/{re:(.*)}/)[1]
           actual =~ Regexp.new(reg_exp)
+        when defined_regexp?(value)
+          defined_regexps = PATTERNS.keys.find_all { |pattern| pattern.is_a? Regexp }
+          matches = value.match(/{(\w+):(\w+)}/)
+          reg_exp = defined_regexps.find {|re| re.match?("#{matches[1]}:#{matches[2]}") }
+          PATTERNS[reg_exp].call(actual, matches[2])
         when pattern?(value)
           actual =~ PATTERNS["#{value.tr('{}', '')}"]
         when non_string_pattern?(value) && !actual.is_a?(String)
@@ -103,6 +108,10 @@ module MatchJson
 
       def regexp?(str)
         !!(str =~ /\A\{re:.+\}\z/)
+      end
+
+      def defined_regexp?(str)
+        !!(str =~ /\A\{\w+:\w+\}\z/)
       end
 
       def compared_different_types?(actual, expected)
